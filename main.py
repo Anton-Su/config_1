@@ -25,11 +25,14 @@ def main():
             if command == 'exit':
                 break
             if command.startswith('ls'):
+                path_1 = path
+                if len(command.split()) == 2:
+                    path_1 = command.split()[1]
                 for file in myzip.namelist():
-                    if file.find(path) != -1 and file.count('/') + file.count('.') == path.count('/') + 1:
+                    if file.find(path_1) != -1 and file.count('/') + file.count('.') == path_1.count('/') + 1:
                         example = file
-                        if (path):
-                            example = file.split(path)[1]
+                        if (path_1):
+                            example = file.split(path_1)[1]
                         print(example.strip('/'))
                         #print(file.replace('/', "").split('/'))
                     # if not file.find(path):
