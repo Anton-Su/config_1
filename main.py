@@ -33,7 +33,7 @@ def main():
             elif command == 'wc':
                 pass
             else:
-                pass
+                print(f'Unsupported command: {command}')
 
 
 if __name__ == '__main__':
