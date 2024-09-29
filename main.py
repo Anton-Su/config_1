@@ -18,14 +18,15 @@ def wc(path):
 
 
 def main():
-    with ZipFile('archive.rar', 'a') as file:
+    with ZipFile('archive.7z', 'a') as file:
         path = '/'
         while True:
             command = input('$ ')
             if command == 'exit':
                 break
-            if command == 'ls':
-                pass
+            if command.startswith('ls'):
+                for fil in file.namelist():
+                    print(fil)
             elif command == 'cd':
                 pass
             elif command == 'touch':
