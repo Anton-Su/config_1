@@ -32,6 +32,8 @@ def main():
                 pass
             elif command == 'wc':
                 pass
+            else:
+                pass
 
 
 if __name__ == '__main__':
