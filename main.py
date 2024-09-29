@@ -9,10 +9,6 @@ def cd(path):
     pass
 
 
-def exi(path):
-    pass
-
-
 def touch(path):
     pass
 
@@ -22,7 +18,20 @@ def wc(path):
 
 
 def main():
-    pass
+    with ZipFile('archive.rar', 'a') as file:
+        path = '/'
+        while True:
+            command = input('$ ')
+            if command == 'exit':
+                break
+            if command == 'ls':
+                pass
+            elif command == 'cd':
+                pass
+            elif command == 'touch':
+                pass
+            elif command == 'wc':
+                pass
 
 
 if __name__ == '__main__':
