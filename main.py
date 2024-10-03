@@ -53,7 +53,6 @@ def main():
                 #             print(example.strip('/'))
                 elif command.startswith('cd'):
                     command_and_path = command.split(' ', 1)
-                    maybe_path = ''
                     if len(command_and_path) == 1:
                         path_file = '/'
                         continue
