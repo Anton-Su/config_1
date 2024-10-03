@@ -56,7 +56,7 @@ def main():
                     if not maybe_path.endswith('/'):
                         Path = zipfile.Path(archivePath, maybe_path + '/')
                     if Path.is_dir() and Path.exists():
-                        path_file = '/' + Path.name
+                        path_file = '/' + Path.name + '/'
                         continue
                     print(f"bash: cd: {maybe_path}: No such file or directory")
                 elif command.startswith('touch'):
