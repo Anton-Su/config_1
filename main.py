@@ -19,7 +19,7 @@ def wc(path):
 
 def main():
     with ZipFile('archive.zip', 'a') as myzip:
-        path = '/'
+        path = 'folder_1'
         while True:
             command = input('$ ')
             if command == 'exit':
