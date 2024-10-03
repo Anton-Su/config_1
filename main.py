@@ -51,7 +51,7 @@ def main():
                         maybe_path = path_file[1:] + maybe_path
                     Path = zipfile.Path(archivePath, maybe_path)
                     if Path.is_file() and Path.exists():
-                        path_file = '/' + ''.join(str(Path).split('.zip/', 1)[1])
+                        print(f"bash: cd: {maybe_path}: Not a directory")
                         continue
                     if not maybe_path.endswith('/'):
                         Path = zipfile.Path(archivePath, maybe_path + '/')
@@ -62,9 +62,12 @@ def main():
                 elif command.startswith('touch'):
                     touch = command.split(" ", 1)
                     if len(touch) > 1:
-                        path_to_file = path_file[1:] + touch[1]
-                        print(path_to_file)
-                        myzip.writestr(path_to_file, "")
+                        Path = zipfile.Path(archivePath, path_file[1:])
+                        if (Path.is_file()):
+                            print(1111111)
+                        # else:
+                        #     path_to_file = path_file[1:] + touch[1]
+                        #     myzip.writestr(path_to_file, "")
                 elif command == 'wc':
                     pass
                 else:
