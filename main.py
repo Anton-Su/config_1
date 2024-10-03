@@ -53,22 +53,21 @@ def main():
                 #             print(example.strip('/'))
                 elif command.startswith('cd'):
                     command_and_path = command.split(' ', 1)
-                    maybe_path = '/'
-                    if len(command_and_path) != 1:
-                        maybe_path = command_and_path[1]
+                    maybe_path = ''
+                    if len(command_and_path) == 1:
+                        path_file = '/'
+                        continue
+                    maybe_path = command_and_path[1]
                     if not maybe_path.startswith('/'):  # не по абсолютному пути
-                        maybe_path = path_file + maybe_path
+                        maybe_path = path_file[1:] + maybe_path
                     Path = zipfile.Path(archivePath, maybe_path)
-                    # for i in Path.iterdir():
-                    #     print(str(i).split('.zip/', 1))
-                    # print(list(Path.iterdir()))
-                    if Path.is_file():
-                        path_file = ''.join(str(Path).split('.zip/', 1))
+                    if Path.is_file() and Path.exists():
+                        path_file = '/' + ''.join(str(Path).split('.zip/', 1)[1])
                         continue
                     if not maybe_path.endswith('/'):
                         Path = zipfile.Path(archivePath, maybe_path + '/')
-                    if Path.is_dir():
-                        path_file = ''.join(str(Path).split('.zip/', 1))
+                    if Path.is_dir() and Path.exists():
+                        path_file = '/' + ''.join(str(Path).split('.zip/', 1)[1])
                         continue
                     print(f"bash: cd: {maybe_path}: No such file or directory")
                     # for i in Path.iterdir():
