@@ -4,8 +4,11 @@ import os
 import io
 
 
-def ls(path):
-    pass
+def ls(archivePath, path_file):
+    with zipfile.ZipFile(archivePath, 'a') as myzip:
+        Path = zipfile.Path(archivePath, path_file[1:])
+        for i in Path.iterdir():
+            print(i.name)
 
 
 def cd(path):
@@ -39,9 +42,7 @@ def main():
                 if command == 'exit':
                     break
                 if command == 'ls':
-                    Path = zipfile.Path(archivePath, path_file[1:])
-                    for i in Path.iterdir():
-                        print(i.name)
+                    ls(archivePath, path_file)
                 elif command.startswith('cd'):
                     command_and_path = command.split(' ', 1)
                     if len(command_and_path) == 1:
