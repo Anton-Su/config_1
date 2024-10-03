@@ -52,7 +52,7 @@ def main():
                         maybe_path = path_file[1:] + maybe_path
                     Path = zipfile.Path(archivePath, maybe_path)
                     if Path.is_file() and Path.exists():
-                        print(f"bash: cd: {maybe_path}: Not a directory")
+                        print(f"bash: cd: {Path.name}: Not a directory")
                         continue
                     if not maybe_path.endswith('/'):
                         Path = zipfile.Path(archivePath, maybe_path + '/')
@@ -67,6 +67,7 @@ def main():
                         if not Path.exists():
                             path_to_file = path_file[1:] + touch[1]
                             myzip.writestr(path_to_file, "")
+
                         # if Path.exists():
                         #     with Path.open('w') as writer:
                         #        # example = io.RawIOBase()
@@ -77,22 +78,21 @@ def main():
                     wc = command.split(" ", 1)
                     if len(wc) > 1:
                         Path = zipfile.Path(archivePath, path_file[1:] + wc[1])
-                        if Path.exists():
-                            len_bait = len(Path.read_bytes())
-                            with Path.open('r') as reader:
-                                text = reader.readlines()
-                            stroki = len(text)
-                            slova = 0
-                            for i in range(stroki):
-                                slova += len(text[i].split())
-                            print(slova)
-
-
-
-
+                        if Path.exists() or zipfile.Path(archivePath, path_file[1:] + wc[1] + '/'):
+                            if Path.is_file():
+                                len_bait = len(Path.read_bytes())
+                                with Path.open('r') as reader:
+                                    text = reader.readlines()
+                                stroki = len(text)
+                                slova = 0
+                                for i in range(stroki):
+                                    slova += len(text[i].split())
+                                print(f'\t {stroki} \t {slova} \t {len_bait}')
+                            else:
+                                print(f'wc: {Path.name}: Is a directory')
+                                print(f'\t 0 \t 0 \t 0 {Path.name}')
                 else:
                     print(f'Unsupported command: {command}')
-
 
 
 if __name__ == '__main__':
