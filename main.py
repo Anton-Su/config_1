@@ -31,13 +31,11 @@ def main():
         return
     os.system(startScriptPath)
     print(f"Вводите команды, {name}!")
-    hello_txt = zipfile.Path("sample.zip", "hello.txt");
-
     if zipfile.is_zipfile(archivePath):
         with zipfile.ZipFile(archivePath, 'a') as myzip:
-            path = '\\'
+            path_file = '\\'
             while True:
-                command = input(f'{archivePath + path[:-1] }$ ').strip()
+                command = input(f'{archivePath + path_file[:-1] }$ ').strip()
                 if command == 'exit':
                     break
                 if command.startswith('ls'):
@@ -54,9 +52,17 @@ def main():
                 #             if (path_1):
                 #                 example = file.split(path_1)[1]
                 #             print(example.strip('/'))
-                elif command.startswith('cd '):
-                    _, path = command.split(' ', 1)
-
+                elif command.startswith('cd'):
+                    command_and_path = command.split(' ', 1)
+                    maybe_path = '/'
+                    if len(command_and_path) != 0:
+                        maybe_path = command_and_path[1]
+                    Path = zipfile.Path(archivePath, maybe_path)
+                    if Path.is_file():
+                        pass
+                    for i in Path.iterdir():
+                        print(i)
+                    print(list(Path.iterdir()))
                     pass
                 elif command == 'touch':
                     pass
