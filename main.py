@@ -40,8 +40,7 @@ def main():
                 if command.startswith('ls'):
                     Path = zipfile.Path(archivePath, path_file[1:])
                     for i in Path.iterdir():
-                        print(''.join(str(i).split('.zip/', 1)[1]).strip('/'))
-
+                        print(''.join(str(i).split('/')[-2]).strip('/'))
                 elif command.startswith('cd'):
                     command_and_path = command.split(' ', 1)
                     if len(command_and_path) == 1:
