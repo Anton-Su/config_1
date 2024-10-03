@@ -31,8 +31,14 @@ def cd(command, path_file, archivePath):
     return path_file
 
 
-def touch(path):
-    pass
+def touch(command, path_file, archivePath):
+    with zipfile.ZipFile(archivePath, 'a') as myzip:
+        touch = command.split(" ", 1)
+        if len(touch) > 1:
+            Path = zipfile.Path(archivePath, path_file[1:] + touch[1])
+            if not Path.exists():
+                path_to_file = path_file[1:] + touch[1]
+                myzip.writestr(path_to_file, "")
 
 
 def wc(path):
@@ -62,18 +68,7 @@ def main():
                 elif command.startswith('cd'):
                     path_file = cd(command, path_file, archivePath)
                 elif command.startswith('touch'):
-                    touch = command.split(" ", 1)
-                    if len(touch) > 1:
-                        Path = zipfile.Path(archivePath, path_file[1:] + touch[1])
-                        if not Path.exists():
-                            path_to_file = path_file[1:] + touch[1]
-                            myzip.writestr(path_to_file, "")
-
-                        # if Path.exists():
-                        #     with Path.open('w') as writer:
-                        #        # example = io.RawIOBase()
-                        #         #example.write() - создаёт дубликаты. ничего с этим не сделать!
-                        #         writer.write(bytes(0))
+                    touch(command, path_file, archivePath)
 
                 elif command.startswith('wc'):
                     wc = command.split(" ", 1)
