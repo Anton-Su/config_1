@@ -33,7 +33,7 @@ def main():
     print(f"Вводите команды, {name}!")
     if zipfile.is_zipfile(archivePath):
         with zipfile.ZipFile(archivePath, 'a') as myzip:
-            path_file = '\\'
+            path_file = '/'
             while True:
                 command = input(f'{archivePath + path_file[:-1] }$ ').strip()
                 if command == 'exit':
@@ -57,6 +57,10 @@ def main():
                     maybe_path = '/'
                     if len(command_and_path) != 0:
                         maybe_path = command_and_path[1]
+                    if not maybe_path.startswith('/'): # не по абсолютному пути
+                        maybe_path = maybe_path
+
+
                     Path = zipfile.Path(archivePath, maybe_path)
                     if Path.is_file():
                         # что-то
@@ -66,6 +70,7 @@ def main():
                     if Path.is_dir():
                         # что-то
                         continue
+                    # файл не найден
                     # for i in Path.iterdir():
                     #     print(i)
                     # print(list(Path.iterdir()))
