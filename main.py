@@ -64,12 +64,9 @@ def main():
                     touch = command.split(" ", 1)
                     if len(touch) > 1:
                         Path = zipfile.Path(archivePath, path_file[1:] + touch[1])
-                        if (Path.is_file()):
-                            print(1111111)
-
-                        # else:
-                        #     path_to_file = path_file[1:] + touch[1]
-                        #     myzip.writestr(path_to_file, "")
+                        if not Path.is_file():
+                             path_to_file = path_file[1:] + touch[1]
+                             myzip.writestr(path_to_file, "")
                 elif command == 'wc':
                     pass
                 else:
