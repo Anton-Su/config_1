@@ -32,7 +32,6 @@ def main():
     print(f"Вводите команды, {name}!")
     if zipfile.is_zipfile(archivePath):
         with zipfile.ZipFile(archivePath, 'a') as myzip:
-            # myzip.write('hei.txt', compress_type=zipfile.ZIP_DEFLATED)
             path_file = '/'
             while True:
                 command = input(f'{archivePath + path_file[:-1]} $ ').strip()
@@ -64,13 +63,22 @@ def main():
                     touch = command.split(" ", 1)
                     if len(touch) > 1:
                         Path = zipfile.Path(archivePath, path_file[1:] + touch[1])
-                        if not Path.is_file():
-                             path_to_file = path_file[1:] + touch[1]
-                             myzip.writestr(path_to_file, "")
+                        if not Path.exists():
+                            path_to_file = path_file[1:] + touch[1]
+                            myzip.writestr(path_to_file, "")
                 elif command == 'wc':
-                    pass
+                    touch = command.split(" ", 1)
+                    if len(touch) > 1:
+                        Path = zipfile.Path(archivePath, path_file[1:] + touch[1])
+                        if Path.exists():
+                            with myzip.open(path_file[1:] + touch[1], "r"):
+                                pass
+
+
+
                 else:
                     print(f'Unsupported command: {command}')
+
 
 
 if __name__ == '__main__':
