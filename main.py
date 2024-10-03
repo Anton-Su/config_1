@@ -1,4 +1,4 @@
-from zipfile import ZipFile
+from zipfile import ZipFile, is_zipfile
 import configparser
 import os
 
@@ -30,14 +30,23 @@ def main():
         return
     os.system(startScriptPath)
     print(f"Вводите команды, {name}!")
-    with ZipFile(archivePath, 'a') as myzip:
-        path = '\\'
-        while True:
-            command = input(f'{archivePath + path[:-1] }$ ').strip()
-            if command == 'exit':
-                break
-            if command.startswith('ls'):
-                pass
+    if is_zipfile(archivePath):
+        with ZipFile(archivePath, 'a') as myzip:
+            path = '\\'
+            if os.path.isfile(archivePath + "\\folder_1"):
+                print(1321)
+            if os.path.isdir(archivePath + "\\folder_1"):
+                print(1321231)
+            if os.path.exists(archivePath + "\\folder_1"):
+                print(1231212)
+            if os.path.isdir(archivePath):
+                print("Directory exists")
+            while True:
+                command = input(f'{archivePath + path[:-1] }$ ').strip()
+                if command == 'exit':
+                    break
+                if command.startswith('ls'):
+                    pass
                 # path_1 = path
                 # flag = False
                 # if len(command.split()) == 2:
@@ -50,17 +59,17 @@ def main():
                 #             if (path_1):
                 #                 example = file.split(path_1)[1]
                 #             print(example.strip('/'))
-            elif command.startswith('cd '):
-                _, path = command.split(' ', 1)
+                elif command.startswith('cd '):
+                    _, path = command.split(' ', 1)
 
 
-                pass
-            elif command == 'touch':
-                pass
-            elif command == 'wc':
-                pass
-            else:
-                print(f'Unsupported command: {command}')
+                    pass
+                elif command == 'touch':
+                    pass
+                elif command == 'wc':
+                    pass
+                else:
+                    print(f'Unsupported command: {command}')
 
 
 if __name__ == '__main__':
