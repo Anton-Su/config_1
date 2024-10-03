@@ -2,7 +2,6 @@ import zipfile
 import configparser
 import os
 
-
 def ls(path):
     pass
 
@@ -32,6 +31,7 @@ def main():
     print(f"Вводите команды, {name}!")
     if zipfile.is_zipfile(archivePath):
         with zipfile.ZipFile(archivePath, 'a') as myzip:
+            # myzip.write('hei.txt', compress_type=zipfile.ZIP_DEFLATED)
             path_file = '/'
             while True:
                 command = input(f'{archivePath + path_file[:-1]} $ ').strip()
@@ -62,8 +62,9 @@ def main():
                 elif command.startswith('touch'):
                     touch = command.split(" ", 1)
                     if len(touch) > 1:
-                        path_to_file = path_file + command.split(" ", 1)[1]
-                        myzip.write(path_to_file, os.path.basename(path_to_file))
+                        path_to_file = path_file[1:] + touch[1]
+                        print(path_to_file)
+                        myzip.writestr(path_to_file, "")
                 elif command == 'wc':
                     pass
                 else:
