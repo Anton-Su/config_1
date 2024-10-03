@@ -5,14 +5,30 @@ import io
 
 
 def ls(archivePath, path_file):
-    with zipfile.ZipFile(archivePath, 'a') as myzip:
-        Path = zipfile.Path(archivePath, path_file[1:])
-        for i in Path.iterdir():
-            print(i.name)
+    Path = zipfile.Path(archivePath, path_file[1:])
+    for i in Path.iterdir():
+        print(i.name)
 
 
-def cd(path):
-    pass
+def cd(command, path_file, archivePath):
+    command_and_path = command.split(' ', 1)
+    if len(command_and_path) == 1:
+        path_file = '/'
+        return path_file
+    maybe_path = command_and_path[1]
+    if not maybe_path.startswith('/'):  # не по абсолютному пути
+        maybe_path = path_file[1:] + maybe_path
+    Path = zipfile.Path(archivePath, maybe_path)
+    if Path.is_file() and Path.exists():
+        print(f"bash: cd: {Path.name}: Not a directory")
+        return path_file
+    if not maybe_path.endswith('/'):
+        Path = zipfile.Path(archivePath, maybe_path + '/')
+    if Path.is_dir() and Path.exists():
+        path_file = '/' + Path.name + '/'
+        return path_file
+    print(f"bash: cd: {maybe_path}: No such file or directory")
+    return path_file
 
 
 def touch(path):
@@ -44,23 +60,7 @@ def main():
                 if command == 'ls':
                     ls(archivePath, path_file)
                 elif command.startswith('cd'):
-                    command_and_path = command.split(' ', 1)
-                    if len(command_and_path) == 1:
-                        path_file = '/'
-                        continue
-                    maybe_path = command_and_path[1]
-                    if not maybe_path.startswith('/'):  # не по абсолютному пути
-                        maybe_path = path_file[1:] + maybe_path
-                    Path = zipfile.Path(archivePath, maybe_path)
-                    if Path.is_file() and Path.exists():
-                        print(f"bash: cd: {Path.name}: Not a directory")
-                        continue
-                    if not maybe_path.endswith('/'):
-                        Path = zipfile.Path(archivePath, maybe_path + '/')
-                    if Path.is_dir() and Path.exists():
-                        path_file = '/' + Path.name + '/'
-                        continue
-                    print(f"bash: cd: {maybe_path}: No such file or directory")
+                    path_file = cd(command, path_file, archivePath)
                 elif command.startswith('touch'):
                     touch = command.split(" ", 1)
                     if len(touch) > 1:
