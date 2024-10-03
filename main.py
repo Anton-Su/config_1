@@ -32,9 +32,8 @@ def main():
     print(f"Вводите команды, {name}!")
     with ZipFile(archivePath, 'a') as myzip:
         path = '\\'
-        print(path)
         while True:
-            command = input(f'{archivePath} $ ')
+            command = input(f'{archivePath + path[:-1] }$ ').strip()
             if command == 'exit':
                 break
             if command.startswith('ls'):
@@ -51,7 +50,10 @@ def main():
                 #             if (path_1):
                 #                 example = file.split(path_1)[1]
                 #             print(example.strip('/'))
-            elif command == 'cd':
+            elif command.startswith('cd '):
+                _, path = command.split(' ', 1)
+
+
                 pass
             elif command == 'touch':
                 pass
