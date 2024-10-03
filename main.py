@@ -55,12 +55,10 @@ def main():
                 elif command.startswith('cd'):
                     command_and_path = command.split(' ', 1)
                     maybe_path = '/'
-                    if len(command_and_path) != 0:
+                    if len(command_and_path) != 1:
                         maybe_path = command_and_path[1]
-                    if not maybe_path.startswith('/'): # не по абсолютному пути
-                        maybe_path = maybe_path
-
-
+                    if not maybe_path.startswith('/'):  # не по абсолютному пути
+                        maybe_path = path_file + maybe_path
                     Path = zipfile.Path(archivePath, maybe_path)
                     if Path.is_file():
                         # что-то
