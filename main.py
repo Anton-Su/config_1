@@ -1,5 +1,4 @@
 import zipfile
-#from zipfile import ZipFile, is_zipfile, Path
 import configparser
 import os
 
@@ -35,7 +34,7 @@ def main():
         with zipfile.ZipFile(archivePath, 'a') as myzip:
             path_file = '/'
             while True:
-                command = input(f'{archivePath + path_file[:-1] }$ ').strip()
+                command = input(f'{archivePath + path_file[:-1]} $ ').strip()
                 if command == 'exit':
                     break
                 if command.startswith('ls'):
@@ -60,13 +59,16 @@ def main():
                     if not maybe_path.startswith('/'):  # не по абсолютному пути
                         maybe_path = path_file + maybe_path
                     Path = zipfile.Path(archivePath, maybe_path)
+                    # for i in Path.iterdir():
+                    #     print(str(i).split('.zip/', 1))
+                    # print(list(Path.iterdir()))
                     if Path.is_file():
-                        # что-то
+                        path_file = ''.join(str(Path).split('.zip/', 1))
                         continue
                     if not maybe_path.endswith('/'):
                         Path = zipfile.Path(archivePath, maybe_path + '/')
                     if Path.is_dir():
-                        # что-то
+                        path_file = ''.join(str(Path).split('.zip/', 1))
                         continue
                     # файл не найден
                     # for i in Path.iterdir():
