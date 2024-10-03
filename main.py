@@ -59,11 +59,17 @@ def main():
                         maybe_path = command_and_path[1]
                     Path = zipfile.Path(archivePath, maybe_path)
                     if Path.is_file():
-                        pass
-                    for i in Path.iterdir():
-                        print(i)
-                    print(list(Path.iterdir()))
-                    pass
+                        # что-то
+                        continue
+                    if not maybe_path.endswith('/'):
+                        Path = zipfile.Path(archivePath, maybe_path + '/')
+                    if Path.is_dir():
+                        # что-то
+                        continue
+                    # for i in Path.iterdir():
+                    #     print(i)
+                    # print(list(Path.iterdir()))
+                    # pass
                 elif command == 'touch':
                     pass
                 elif command == 'wc':
