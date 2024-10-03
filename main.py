@@ -37,7 +37,7 @@ def main():
                 command = input(f'{archivePath + path_file[:-1]} $ ').strip()
                 if command == 'exit':
                     break
-                if command.startswith('ls'):
+                if command == 'ls':
                     Path = zipfile.Path(archivePath, path_file[1:])
                     for i in Path.iterdir():
                         print(''.join(str(i).strip('/').split('/')[-1]).strip('/'))
@@ -59,8 +59,9 @@ def main():
                         path_file = '/' + ''.join(str(Path).split('.zip/', 1)[1])
                         continue
                     print(f"bash: cd: {maybe_path}: No such file or directory")
-                elif command == 'touch':
-                    pass
+                elif command.startswith('touch'):
+                    path_to_file = path_file + command.split(" ", 1)[1]
+                    myzip.write(path_to_file, os.path.basename(path_to_file))
                 elif command == 'wc':
                     pass
                 else:
