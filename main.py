@@ -72,22 +72,21 @@ def main():
     os.system(startScriptPath)
     print(f"Вводите команды, {name}!")
     if zipfile.is_zipfile(archivePath):
-        with zipfile.ZipFile(archivePath, 'a') as myzip:
-            path_file = '/'
-            while True:
-                command = input(f'{archivePath + path_file[:-1]} $ ').strip()
-                if command == 'exit':
-                    break
-                if command == 'ls':
-                    ls(archivePath, path_file)
-                elif command.startswith('cd'):
-                    path_file = cd(command, path_file, archivePath)
-                elif command.startswith('touch'):
-                    touch(command, path_file, archivePath)
-                elif command.startswith('wc'):
-                    wc(command, path_file, archivePath)
-                else:
-                    print(f'Unsupported command: {command}')
+        path_file = '/'
+        while True:
+            command = input(f'{archivePath + path_file[:-1]} $ ').strip()
+            if command == 'exit':
+                break
+            if command == 'ls':
+                ls(archivePath, path_file)
+            elif command.startswith('cd'):
+                path_file = cd(command, path_file, archivePath)
+            elif command.startswith('touch'):
+                touch(command, path_file, archivePath)
+            elif command.startswith('wc'):
+                wc(command, path_file, archivePath)
+            else:
+                print(f'Unsupported command: {command}')
 
 
 if __name__ == '__main__':
