@@ -29,12 +29,11 @@ def main():
         print("Error: Check ini файл!")
         return
     os.system(startScriptPath)
-
-
-    with ZipFile('archive.zip', 'a') as myzip:
+    print(f"Вводите команды, {name}!")
+    with ZipFile(archivePath, 'a') as myzip:
         path = 'folder_1'
         while True:
-            command = input('$ ')
+            command = input(f'{archivePath}$ ')
             if command == 'exit':
                 break
             if command.startswith('ls'):
