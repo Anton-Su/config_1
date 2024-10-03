@@ -60,8 +60,10 @@ def main():
                         continue
                     print(f"bash: cd: {maybe_path}: No such file or directory")
                 elif command.startswith('touch'):
-                    path_to_file = path_file + command.split(" ", 1)[1]
-                    myzip.write(path_to_file, os.path.basename(path_to_file))
+                    touch = command.split(" ", 1)
+                    if len(touch) > 1:
+                        path_to_file = path_file + command.split(" ", 1)[1]
+                        myzip.write(path_to_file, os.path.basename(path_to_file))
                 elif command == 'wc':
                     pass
                 else:
