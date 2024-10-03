@@ -1,4 +1,14 @@
 from zipfile import ZipFile
+import configparser
+import os
+
+config = configparser.ConfigParser()
+config.read('configuration.ini')
+name = config.get('User', 'name')
+archivePath = config.get('ArchivePath', 'value')
+startScriptPath = config.get('StartScriptPath', 'value')
+os.system(startScriptPath)
+
 
 
 def ls(path):
