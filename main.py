@@ -2,14 +2,6 @@ from zipfile import ZipFile
 import configparser
 import os
 
-config = configparser.ConfigParser()
-config.read('configuration.ini')
-name = config.get('User', 'name')
-archivePath = config.get('ArchivePath', 'value')
-startScriptPath = config.get('StartScriptPath', 'value')
-os.system(startScriptPath)
-
-
 
 def ls(path):
     pass
@@ -28,6 +20,17 @@ def wc(path):
 
 
 def main():
+    config = configparser.ConfigParser()
+    config.read('configuration.ini')
+    name = config.get('User', 'name')
+    archivePath = config.get('ArchivePath', 'value')
+    startScriptPath = config.get('StartScriptPath', 'value')
+    if not os.path.exists(archivePath) or not os.path.exists(startScriptPath):
+        print("Error: Check ini файл!")
+        return
+    os.system(startScriptPath)
+
+
     with ZipFile('archive.zip', 'a') as myzip:
         path = 'folder_1'
         while True:
