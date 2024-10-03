@@ -74,7 +74,7 @@ def main():
         path_file = '/'
         while True:
             command = input(f'{archivePath + path_file[:-1]} $ ').strip()
-            if command == 'exit':
+            if command.startswith('exit'):
                 break
             if command == 'ls':
                 ls(archivePath, path_file)
