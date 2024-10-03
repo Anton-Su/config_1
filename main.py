@@ -1,7 +1,6 @@
 import zipfile
 import configparser
 import os
-import io
 
 
 def ls(archivePath, path_file):
