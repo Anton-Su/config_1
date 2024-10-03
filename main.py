@@ -1,4 +1,5 @@
-from zipfile import ZipFile, is_zipfile
+import zipfile
+#from zipfile import ZipFile, is_zipfile, Path
 import configparser
 import os
 
@@ -30,17 +31,11 @@ def main():
         return
     os.system(startScriptPath)
     print(f"Вводите команды, {name}!")
-    if is_zipfile(archivePath):
-        with ZipFile(archivePath, 'a') as myzip:
+    hello_txt = zipfile.Path("sample.zip", "hello.txt");
+
+    if zipfile.is_zipfile(archivePath):
+        with zipfile.ZipFile(archivePath, 'a') as myzip:
             path = '\\'
-            if os.path.isfile(archivePath + "\\folder_1"):
-                print(1321)
-            if os.path.isdir(archivePath + "\\folder_1"):
-                print(1321231)
-            if os.path.exists(archivePath + "\\folder_1"):
-                print(1231212)
-            if os.path.isdir(archivePath):
-                print("Directory exists")
             while True:
                 command = input(f'{archivePath + path[:-1] }$ ').strip()
                 if command == 'exit':
@@ -61,7 +56,6 @@ def main():
                 #             print(example.strip('/'))
                 elif command.startswith('cd '):
                     _, path = command.split(' ', 1)
-
 
                     pass
                 elif command == 'touch':
