@@ -40,7 +40,7 @@ def main():
                 if command == 'ls':
                     Path = zipfile.Path(archivePath, path_file[1:])
                     for i in Path.iterdir():
-                        print(''.join(str(i).strip('/').split('/')[-1]).strip('/'))
+                        print(i.name)
                 elif command.startswith('cd'):
                     command_and_path = command.split(' ', 1)
                     if len(command_and_path) == 1:
@@ -66,13 +66,13 @@ def main():
                         if not Path.exists():
                             path_to_file = path_file[1:] + touch[1]
                             myzip.writestr(path_to_file, "")
+                       # if Path.exists():
+
                 elif command == 'wc':
                     touch = command.split(" ", 1)
                     if len(touch) > 1:
                         Path = zipfile.Path(archivePath, path_file[1:] + touch[1])
-                        if Path.exists():
-                            with myzip.open(path_file[1:] + touch[1], "r"):
-                                pass
+
 
 
 
