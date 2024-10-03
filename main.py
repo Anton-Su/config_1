@@ -1,6 +1,7 @@
 import zipfile
 import configparser
 import os
+import io
 
 
 def ls(path):
@@ -66,13 +67,19 @@ def main():
                         if not Path.exists():
                             path_to_file = path_file[1:] + touch[1]
                             myzip.writestr(path_to_file, "")
-                       # if Path.exists():
+                        # if Path.exists():
+                        #     with Path.open('w') as writer:
+                        #        # example = io.RawIOBase()
+                        #         #example.write() - создаёт дубликаты. ничего с этим не сделать!
+                        #         writer.write(bytes(0))
 
                 elif command == 'wc':
                     touch = command.split(" ", 1)
                     if len(touch) > 1:
                         Path = zipfile.Path(archivePath, path_file[1:] + touch[1])
-
+                        if Path.exists():
+                            path_to_file = path_file[1:] + touch[1]
+                            myzip.writestr(path_to_file, "")
 
 
 
