@@ -70,7 +70,7 @@ def main():
                     if Path.is_dir():
                         path_file = ''.join(str(Path).split('.zip/', 1))
                         continue
-                    # файл не найден
+                    print(f"bash: cd: {maybe_path}: No such file or directory")
                     # for i in Path.iterdir():
                     #     print(i)
                     # print(list(Path.iterdir()))
