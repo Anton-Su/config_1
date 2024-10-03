@@ -73,13 +73,20 @@ def main():
                         #         #example.write() - создаёт дубликаты. ничего с этим не сделать!
                         #         writer.write(bytes(0))
 
-                elif command == 'wc':
-                    touch = command.split(" ", 1)
-                    if len(touch) > 1:
-                        Path = zipfile.Path(archivePath, path_file[1:] + touch[1])
+                elif command.startswith('wc'):
+                    wc = command.split(" ", 1)
+                    if len(wc) > 1:
+                        Path = zipfile.Path(archivePath, path_file[1:] + wc[1])
                         if Path.exists():
-                            path_to_file = path_file[1:] + touch[1]
-                            myzip.writestr(path_to_file, "")
+                            len_bait = len(Path.read_bytes())
+                            with Path.open('r') as reader:
+                                text = reader.readlines()
+                            stroki = len(text)
+                            slova = 0
+                            for i in range(stroki):
+                                slova += len(text[i].split())
+                            print(slova)
+
 
 
 
