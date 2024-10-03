@@ -41,8 +41,23 @@ def touch(command, path_file, archivePath):
                 myzip.writestr(path_to_file, "")
 
 
-def wc(path):
-    pass
+def wc(command, path_file, archivePath):
+    wc = command.split(" ", 1)
+    if len(wc) > 1:
+        Path = zipfile.Path(archivePath, path_file[1:] + wc[1])
+        if Path.exists() or zipfile.Path(archivePath, path_file[1:] + wc[1] + '/'):
+            if Path.is_file():
+                len_bait = len(Path.read_bytes())
+                with Path.open('r') as reader:
+                    text = reader.readlines()
+                stroki = len(text)
+                slova = 0
+                for i in range(stroki):
+                    slova += len(text[i].split())
+                print(f'\t {stroki} \t {slova} \t {len_bait}')
+            else:
+                print(f'wc: {Path.name}: Is a directory')
+                print(f'\t 0 \t 0 \t 0 {Path.name}')
 
 
 def main():
@@ -69,24 +84,8 @@ def main():
                     path_file = cd(command, path_file, archivePath)
                 elif command.startswith('touch'):
                     touch(command, path_file, archivePath)
-
                 elif command.startswith('wc'):
-                    wc = command.split(" ", 1)
-                    if len(wc) > 1:
-                        Path = zipfile.Path(archivePath, path_file[1:] + wc[1])
-                        if Path.exists() or zipfile.Path(archivePath, path_file[1:] + wc[1] + '/'):
-                            if Path.is_file():
-                                len_bait = len(Path.read_bytes())
-                                with Path.open('r') as reader:
-                                    text = reader.readlines()
-                                stroki = len(text)
-                                slova = 0
-                                for i in range(stroki):
-                                    slova += len(text[i].split())
-                                print(f'\t {stroki} \t {slova} \t {len_bait}')
-                            else:
-                                print(f'wc: {Path.name}: Is a directory')
-                                print(f'\t 0 \t 0 \t 0 {Path.name}')
+                    wc(command, path_file, archivePath)
                 else:
                     print(f'Unsupported command: {command}')
 
