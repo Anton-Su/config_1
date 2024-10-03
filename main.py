@@ -1,6 +1,7 @@
-import zipfile
+import ruamel.std.zipfile as zipfile
 import configparser
 import os
+
 
 def ls(path):
     pass
@@ -62,9 +63,10 @@ def main():
                 elif command.startswith('touch'):
                     touch = command.split(" ", 1)
                     if len(touch) > 1:
-                        Path = zipfile.Path(archivePath, path_file[1:])
+                        Path = zipfile.Path(archivePath, path_file[1:] + touch[1])
                         if (Path.is_file()):
                             print(1111111)
+                            #myz.remove(f"firstfile.txt")
                         # else:
                         #     path_to_file = path_file[1:] + touch[1]
                         #     myzip.writestr(path_to_file, "")
