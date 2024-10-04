@@ -41,7 +41,6 @@ def touch(command, path_file, archivePath):
 
 
 def wc(command, path_file, archivePath):
-    print(command)
     if len(command) > 1:
         Path = zipfile.Path(archivePath, path_file[1:] + command[1])
         if Path.exists() or zipfile.Path(archivePath, path_file[1:] + command[1] + '/').exists():
