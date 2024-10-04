@@ -9,10 +9,12 @@ def ls(archivePath, path_file):
     for i in Path.iterdir():
         count += len(i.name)
         if count > 45:
-            count = count - 45
+            count = 0
             print(i.name)
         else:
             print(i.name, end='\t')
+    if count != 0:
+        print()
     return ([i.name for i in Path.iterdir()])
 
 
