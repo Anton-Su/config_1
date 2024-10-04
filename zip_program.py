@@ -7,14 +7,14 @@ def ls(archivePath, path_file):
     Path = zipfile.Path(archivePath, path_file[1:])
     for i in Path.iterdir():
         print(i.name)
+    return ([i.name for i in Path.iterdir()])
 
 
 def cd(command, path_file, archivePath):
-    command_and_path = command.split(' ', 1)
-    if len(command_and_path) == 1:
+    if len(command) == 1:
         path_file = '/'
         return path_file
-    maybe_path = command_and_path[1]
+    maybe_path = command[1]
     if not maybe_path.startswith('/'):  # не по абсолютному пути
         maybe_path = path_file[1:] + maybe_path
     Path = zipfile.Path(archivePath, maybe_path)
@@ -41,10 +41,9 @@ def touch(command, path_file, archivePath):
 
 
 def wc(command, path_file, archivePath):
-    wc = command.split(" ", 1)
-    if len(wc) > 1:
-        Path = zipfile.Path(archivePath, path_file[1:] + wc[1])
-        if Path.exists() or zipfile.Path(archivePath, path_file[1:] + wc[1] + '/'):
+    if len(command) > 1:
+        Path = zipfile.Path(archivePath, path_file[1:] + command[1])
+        if Path.exists() or zipfile.Path(archivePath, path_file[1:] + command[1] + '/').exists():
             if Path.is_file():
                 len_bait = len(Path.read_bytes())
                 with Path.open('r') as reader:
@@ -79,11 +78,11 @@ def main():
             if command == 'ls':
                 ls(archivePath, path_file)
             elif command.startswith('cd'):
-                path_file = cd(command, path_file, archivePath)
+                path_file = cd(command.split(' ', 1), path_file, archivePath)
             elif command.startswith('touch'):
                 touch(command, path_file, archivePath)
             elif command.startswith('wc'):
-                wc(command, path_file, archivePath)
+                wc(command.split(" ", 1), path_file, archivePath)
             else:
                 print(f'Unsupported command: {command}')
 
