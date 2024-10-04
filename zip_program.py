@@ -7,7 +7,6 @@ def ls(archivePath, path_file):
     Path = zipfile.Path(archivePath, path_file[1:])
     for i in Path.iterdir():
         print(i.name)
-    print(([i.name for i in Path.iterdir()]))
     return ([i.name for i in Path.iterdir()])
 
 
@@ -42,6 +41,7 @@ def touch(command, path_file, archivePath):
 
 
 def wc(command, path_file, archivePath):
+    print(command)
     if len(command) > 1:
         Path = zipfile.Path(archivePath, path_file[1:] + command[1])
         if Path.exists() or zipfile.Path(archivePath, path_file[1:] + command[1] + '/').exists():
@@ -54,9 +54,11 @@ def wc(command, path_file, archivePath):
                 for i in range(stroki):
                     slova += len(text[i].split())
                 print(f'\t {stroki} \t {slova} \t {len_bait}')
+                return f'\t {stroki} \t {slova} \t {len_bait}'
             else:
                 print(f'wc: {Path.name}: Is a directory')
                 print(f'\t 0 \t 0 \t 0 {Path.name}')
+                return f'\t {0} \t {0} \t {0}'
 
 
 def main():
