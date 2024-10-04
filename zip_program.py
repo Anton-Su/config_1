@@ -5,8 +5,14 @@ import configparser
 
 def ls(archivePath, path_file):
     Path = zipfile.Path(archivePath, path_file[1:])
+    count = 0
     for i in Path.iterdir():
-        print(i.name)
+        count += len(i.name)
+        if count > 45:
+            count = count - 45
+            print(i.name)
+        else:
+            print(i.name, end='\t')
     return ([i.name for i in Path.iterdir()])
 
 
