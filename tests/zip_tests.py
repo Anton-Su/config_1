@@ -1,8 +1,9 @@
 from unittest import TestCase, main
-
+import main
 
 class Random(TestCase):
-    pass
+    def test_cd(self):
+        self.assertEquals()
 
 
 

@@ -1,4 +1,4 @@
-import main
+import zip_program
 
 config = main.configparser.ConfigParser()
 config.read('configuration.ini')
