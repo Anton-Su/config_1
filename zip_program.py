@@ -85,7 +85,7 @@ def main():
                 touch(command, path_file, archivePath)
             elif command.startswith('wc'):
                 wc(command.split(" ", 1), path_file, archivePath)
-            else:
+            elif command:
                 print(f'Unsupported command: {command}')
 
 
