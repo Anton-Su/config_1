@@ -21,5 +21,16 @@ class Random(TestCase):
     def test_cd_4(self):
         self.assertEqual(zip_program.cd(['cd', ''], '/', archivePath), '/')
 
+    def test_ls_1(self):
+        self.assertEqual(zip_program.ls(archivePath, ''), ['empty folder', 'folder_1', 'folder_2', 'folder_3', 'folder_4', 'folder_5', 'originally folder', 'hm.txt', 'h', 'privet.txt'])
+
+    def test_ls_2(self):
+        self.assertEqual(zip_program.ls(archivePath, '/folder_1/1/hey-hey/'), ['totally normal_photo_1.jpg', 'totally normal_photo_2.jpg'])
+
+    def test_ls_3(self):
+        self.assertEqual(zip_program.ls(archivePath, '/originally folder/'), ['folder 2-2', 'surprize!'])
+
+
+
 if __name__ == '__main__':
     main()

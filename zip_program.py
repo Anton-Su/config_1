@@ -25,7 +25,7 @@ def cd(command, path_file, archivePath):
     if not maybe_path.endswith('/'):
         Path = zipfile.Path(archivePath, maybe_path + '/')
     if Path.is_dir() and Path.exists():
-        path_file = '/' + Path.name + '/'
+        path_file = path_file + Path.name + '/'
         return path_file
     print(f"bash: cd: {maybe_path}: No such file or directory")
     return path_file
