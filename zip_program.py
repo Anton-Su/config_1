@@ -7,6 +7,7 @@ def ls(archivePath, path_file):
     Path = zipfile.Path(archivePath, path_file[1:])
     for i in Path.iterdir():
         print(i.name)
+    print(([i.name for i in Path.iterdir()]))
     return ([i.name for i in Path.iterdir()])
 
 
