@@ -82,7 +82,7 @@ def main():
     if zipfile.is_zipfile(archivePath):
         path_file = '/'
         while True:
-            command = input(f'{name + "@" + "Configpk" + path_file[:-1]}~$ ').strip()
+            command = input(f'{name + "@" + "Configpc~" + path_file[:-1]}$ ').strip()
             if command.startswith('exit'):
                 break
             if command == 'ls':
