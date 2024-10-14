@@ -5,8 +5,15 @@ import re
 
 
 
-def ls_l():
-    print(1111)
+def ls_l(archivePath, path_file):
+    print(path_file[1:])
+    Path = zipfile.Path(archivePath, path_file[1:])
+    with zipfile.ZipFile(archivePath, mode="r") as archive:
+        for i in Path.iterdir():
+            info = archive.getinfo(str(i.filename))
+        print(info.file_size)
+        print(info.date_time)
+
 
 def ls(archivePath, path_file):
     Path = zipfile.Path(archivePath, path_file[1:])
@@ -23,11 +30,8 @@ def ls(archivePath, path_file):
     return ([i.name for i in Path.iterdir()])
 
 
-def cd(command, path_file, archivePath):
-    if len(command) == 1:
-        path_file = '/'
-        return path_file
-    maybe_path = command[1]
+def path(command, path_file, archivePath):
+    maybe_path = command
     if not maybe_path.startswith('/'):  # не по абсолютному пути
         maybe_path = path_file[1:] + maybe_path
     Path = zipfile.Path(archivePath, maybe_path)
@@ -40,8 +44,14 @@ def cd(command, path_file, archivePath):
         path_file = path_file + Path.name + '/'
         return path_file
     print(f"bash: cd: {maybe_path}: No such file or directory")
-    return path_file
 
+
+def cd(command, path_file, archivePath):
+    result = path(command, path_file, archivePath)
+    if result:
+        return result
+    else:
+        print(f"bash: cd: {command}: No such file or directory")
 
 def touch(command, path_file, archivePath):
     with zipfile.ZipFile(archivePath, 'a') as myzip:
@@ -93,9 +103,9 @@ def main():
             if command == 'ls':
                 ls(archivePath, path_file)
             elif re.match(r'^ls\s*-l$', command):
-                ls_l()
-            elif command.startswith('cd'):
-                path_file = cd(command.split(' ', 1), path_file, archivePath)
+                ls_l(archivePath, path_file)
+            elif command.startswith('cd '):
+                path_file = cd(command.split(' ', 1)[1], path_file, archivePath)
             elif command.startswith('touch'):
                 touch(command, path_file, archivePath)
             elif command.startswith('wc'):
