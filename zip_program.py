@@ -1,7 +1,12 @@
 import os
 import zipfile
 import configparser
+import re
 
+
+
+def ls_l():
+    print(1111)
 
 def ls(archivePath, path_file):
     Path = zipfile.Path(archivePath, path_file[1:])
@@ -87,6 +92,8 @@ def main():
                 break
             if command == 'ls':
                 ls(archivePath, path_file)
+            elif re.match(r'^ls\s*-l$', command):
+                ls_l()
             elif command.startswith('cd'):
                 path_file = cd(command.split(' ', 1), path_file, archivePath)
             elif command.startswith('touch'):
