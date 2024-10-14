@@ -2,6 +2,8 @@ import os
 import zipfile
 import configparser
 import re
+import random
+
 
 months = {
     1: "Jan",
@@ -23,10 +25,13 @@ def ls_l(archivePath, path_file):
     Path = zipfile.Path(archivePath, path_file)
     with zipfile.ZipFile(archivePath, mode="r") as archive:
         for i in Path.iterdir():
-            info = archive.getinfo(path(str(i.name), path_file, archivePath))
-            print(info.file_size)
-            print(info.date_time)
-
+            file = path(str(i.name), path_file, archivePath)
+            info = archive.getinfo(file)
+            mon_ = months[info.date_time[1]] + "\t" + str(info.date_time[2]) + " " + str(info.date_time[3]).rjust(2, "0") + ":" + str(info.date_time[4]).rjust(2, "0")
+            rasmer = info.file_size
+            if info.is_dir():
+                rasmer = random.randint(200, 1800)
+            print(rasmer)
 
 
 def ls(archivePath, path_file):
@@ -121,7 +126,7 @@ def main():
                 break
             if command == 'ls':
                 ls(archivePath, path_file)
-            elif re.match(r'^ls\s*-l$', command):
+            elif re.match(r'^ls\s+-l$', command):
                 ls_l(archivePath, path_file)
             elif command.startswith('cd '):
                 path_file = cd(command.split(' ', 1)[1], path_file, archivePath)
