@@ -4,19 +4,17 @@ import configparser
 import re
 
 
-
 def ls_l(archivePath, path_file):
-    print(path_file[1:])
-    Path = zipfile.Path(archivePath, path_file[1:])
+    Path = zipfile.Path(archivePath, path_file)
     with zipfile.ZipFile(archivePath, mode="r") as archive:
         for i in Path.iterdir():
-            info = archive.getinfo(str(i.filename))
-        print(info.file_size)
-        print(info.date_time)
+            info = archive.getinfo(path(str(i.name), path_file, archivePath))
+            print(info.file_size)
+            print(info.date_time)
 
 
 def ls(archivePath, path_file):
-    Path = zipfile.Path(archivePath, path_file[1:])
+    Path = zipfile.Path(archivePath, path_file)
     count = 0
     for i in Path.iterdir():
         count += len(i.name)
@@ -33,40 +31,45 @@ def ls(archivePath, path_file):
 def path(command, path_file, archivePath):
     maybe_path = command
     if not maybe_path.startswith('/'):  # не по абсолютному пути
-        maybe_path = path_file[1:] + maybe_path
+        maybe_path = path_file + maybe_path
     Path = zipfile.Path(archivePath, maybe_path)
     if Path.is_file() and Path.exists():
-        print(f"bash: cd: {Path.name}: Not a directory")
-        return path_file
+        return maybe_path
     if not maybe_path.endswith('/'):
         Path = zipfile.Path(archivePath, maybe_path + '/')
     if Path.is_dir() and Path.exists():
         path_file = path_file + Path.name + '/'
         return path_file
-    print(f"bash: cd: {maybe_path}: No such file or directory")
+    return path_file
 
 
 def cd(command, path_file, archivePath):
+    if not command.startswith('/'):  # не по абсолютному пути
+        command = path_file + command
+    Path = zipfile.Path(archivePath, command)
     result = path(command, path_file, archivePath)
-    if result:
-        return result
-    else:
+    if Path.is_file() and Path.exists():
+        print(f"bash: cd: {Path.name}: Not a directory")
+        return path_file
+    elif result == path_file:
         print(f"bash: cd: {command}: No such file or directory")
+    return result
+
 
 def touch(command, path_file, archivePath):
     with zipfile.ZipFile(archivePath, 'a') as myzip:
         touch = command.split(" ", 1)
         if len(touch) > 1:
-            Path = zipfile.Path(archivePath, path_file[1:] + touch[1])
+            Path = zipfile.Path(archivePath, path_file + touch[1])
             if not Path.exists():
-                path_to_file = path_file[1:] + touch[1]
+                path_to_file = path_file + touch[1]
                 myzip.writestr(path_to_file, "")
 
 
 def wc(command, path_file, archivePath):
     if len(command) > 1:
-        Path = zipfile.Path(archivePath, path_file[1:] + command[1])
-        if Path.exists() or zipfile.Path(archivePath, path_file[1:] + command[1] + '/').exists():
+        Path = zipfile.Path(archivePath, path_file + command[1])
+        if Path.exists() or zipfile.Path(archivePath, path_file + command[1] + '/').exists():
             if Path.is_file():
                 len_bait = len(Path.read_bytes())
                 with Path.open('r') as reader:
@@ -95,9 +98,9 @@ def main():
     os.system(startScriptPath)
     print(f"Вводите команды, {name}!")
     if zipfile.is_zipfile(archivePath):
-        path_file = '/'
+        path_file = ''
         while True:
-            command = input(f'{name + "@" + "Configpc~" + path_file[:-1]}$ ').strip()
+            command = input(f'{name + "@" + "Configpc~" + path_file}$ ').strip()
             if command.startswith('exit'):
                 break
             if command == 'ls':
