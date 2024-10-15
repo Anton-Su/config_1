@@ -92,7 +92,7 @@ def touch(command, path_file, archivePath, vremen):
     norm_path = str(os.path.normpath(command)).replace('\\', '/') # на винде работает программа
     # c самим файлом
     Path = zipfile.Path(archivePath, os.path.dirname(norm_path) + '/') # c его потомком-папкой
-    if Path.is_dir() and Path.exists():
+    if not os.path.dirname(norm_path) or (Path.is_dir() and Path.exists()):
         with zipfile.ZipFile(archivePath, 'a') as myzip:
             Path = zipfile.Path(archivePath, norm_path)
             if not Path.exists():
