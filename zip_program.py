@@ -53,12 +53,22 @@ def ls(archivePath, path_file):
 
 def path(command, path_file, archivePath):
     maybe_path = command
-    if not maybe_path.startswith('/'):  # не по абсолютному пути
+    if not maybe_path.startswith('\\'):  # не по абсолютному пути
         maybe_path = path_file + maybe_path
     Path = zipfile.Path(archivePath, maybe_path)
     if Path.is_file() and Path.exists():
         return maybe_path
-    if not maybe_path.endswith('/'):
+    print(maybe_path) # на точки и двоеточия
+    if '...' in maybe_path:
+        return path_file
+
+
+
+    maybe_path_with_tochi = maybe_path.split('\\')
+
+    print(maybe_path_with_tochi)
+    Path = zipfile.Path(archivePath, maybe_path)
+    if not maybe_path.endswith('\\'):
         Path = zipfile.Path(archivePath, maybe_path + '/')
     if Path.is_dir() and Path.exists():
         path_file = path_file + Path.name + '/'
@@ -67,7 +77,7 @@ def path(command, path_file, archivePath):
 
 
 def cd(command, path_file, archivePath):
-    if not command.startswith('/'):  # не по абсолютному пути
+    if not command.startswith('\\'):  # не по абсолютному пути
         command = path_file + command
     Path = zipfile.Path(archivePath, command)
     result = path(command, path_file, archivePath)
@@ -130,6 +140,8 @@ def main():
                 ls(archivePath, path_file)
             elif re.match(r'^ls\s+-l$', command):
                 ls_l(archivePath, path_file)
+            elif command == 'cd':
+                path_file = ''
             elif command.startswith('cd '):
                 path_file = cd(command.split(' ', 1)[1], path_file, archivePath)
             elif command.startswith('touch'):
