@@ -63,8 +63,9 @@ def path(command, path_file, archivePath):
     while '//' in maybe_path:
         maybe_path = maybe_path.replace('//', '/', 1)
     maybe_path = maybe_path.split('/')
+    print(maybe_path)
     for i in range(len(maybe_path) - 1, -1, -1):
-        if maybe_path[i] == '.':
+        if maybe_path[i] == '.' and i > 0:
             maybe_path[i] = ''
         elif maybe_path[i] == '..' and i > 0:
             maybe_path[i] = ''
@@ -73,6 +74,8 @@ def path(command, path_file, archivePath):
     print(maybe_path)
     while '//' in maybe_path:
         maybe_path = maybe_path.replace('//', '/', 1)
+    if maybe_path == '.':
+        return '.'
     Path = zipfile.Path(archivePath, maybe_path)
     if Path.is_file() and Path.exists():
         return maybe_path
@@ -88,6 +91,8 @@ def path(command, path_file, archivePath):
 
 def cd(command, path_file, archivePath):
     result = path(command, path_file, archivePath)
+    if result == '.':
+        return path_file
     if result == path_file:
         print(f"bash: cd: {command}: No such file or directory")
     return result
