@@ -105,36 +105,33 @@ def cd(command, path_file, archivePath):
 
 def touch(command, path_file, archivePath, vremen):
     with zipfile.ZipFile(archivePath, 'a') as myzip:
-        touch = command.split(" ", 1)
-        if len(touch) > 1:
-            Path = zipfile.Path(archivePath, path_file + touch[1])
-            path_to_file = path_file + touch[1]
-            if not Path.exists():
-                myzip.writestr(path_to_file, "")
-            else:
-                current_time = datetime.now()
-                formatted_time = current_time.strftime("%b\t%d %H:%M")
-                vremen[path_to_file] = formatted_time
+        Path = zipfile.Path(archivePath, path_file + command)
+        path_to_file = path_file + command
+        if not Path.exists():
+            myzip.writestr(path_to_file, "")
+        else:
+            current_time = datetime.now()
+            formatted_time = current_time.strftime("%b\t%d %H:%M")
+            vremen[path_to_file] = formatted_time
 
 
 def wc(command, path_file, archivePath):
-    if len(command) > 1:
-        Path = zipfile.Path(archivePath, path_file + command[1])
-        if Path.exists() or zipfile.Path(archivePath, path_file + command[1] + '/').exists():
-            if Path.is_file():
-                len_bait = len(Path.read_bytes())
-                with Path.open('r') as reader:
-                    text = reader.readlines()
-                stroki = len(text)
-                slova = 0
-                for i in range(stroki):
-                    slova += len(text[i].split())
-                print(f'\t {stroki} \t {slova} \t {len_bait}')
-                return f'\t {stroki} \t {slova} \t {len_bait}'
-            else:
-                print(f'wc: {Path.name}: Is a directory')
-                print(f'\t 0 \t 0 \t 0 {Path.name}')
-                return f'\t {0} \t {0} \t {0}'
+    Path = zipfile.Path(archivePath, path_file + command)
+    if Path.exists() or zipfile.Path(archivePath, path_file + command + '/').exists():
+        if Path.is_file():
+            len_bait = len(Path.read_bytes())
+            with Path.open('r') as reader:
+                text = reader.readlines()
+            stroki = len(text)
+            slova = 0
+            for i in range(stroki):
+                slova += len(text[i].split())
+            print(f'\t {stroki} \t {slova} \t {len_bait}')
+            return f'\t {stroki} \t {slova} \t {len_bait}'
+        else:
+            print(f'wc: {Path.name}: Is a directory')
+            print(f'\t 0 \t 0 \t 0 {Path.name}')
+            return f'\t {0} \t {0} \t {0}'
 
 
 def main():
@@ -168,16 +165,19 @@ def main():
             elif re.match(r'^ls\s+-l$', command):
                 ls_l(archivePath, path_file, vremen)
             elif command.startswith('cd'):
-                if len(command.split(' ')) == 1:
+                print(command)
+                if command == 'cd':
                     path_file = ''
-                elif len(command.split(' ')) == 2:
-                    path_file = cd(command.split(' ', 1)[1], path_file, archivePath)
+                elif re.match(r'^cd\s+\S+$', command):
+                    path_file = cd(command.split(' ', 1)[1].lstrip(), path_file, archivePath)
                 else:
                     print(f"bash: cd: too many arguments")
-            elif command.startswith('touch'):
-                touch(command, path_file, archivePath, vremen)
-            elif command.startswith('wc'):
-                wc(command.split(" ", 1), path_file, archivePath)
+            elif command == 'touch':
+                print('touch: missing file operand')
+            elif command.startswith('touch '):
+                touch(command.split(' ', 1)[1].lstrip(), path_file, archivePath, vremen)
+            elif command.startswith('wc '):
+                wc(command.split(' ', 1)[1].lstrip(), path_file, archivePath)
             elif command:
                 print(f'Unsupported command: {command}')
 
