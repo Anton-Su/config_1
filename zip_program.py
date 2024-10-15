@@ -55,45 +55,26 @@ def ls(archivePath, path_file):
 
 
 def path(command, path_file, archivePath):
-    maybe_path = command
-    if not maybe_path.startswith('\\'):  # не по абсолютному пути
-        maybe_path = path_file + maybe_path
+    if not command.startswith('\\'):  # не по абсолютному пути
+        command = path_file + command
     else:
-        maybe_path = maybe_path[1:]
-    Path = zipfile.Path(archivePath, maybe_path)
+        command = command[1:]
+    norm_path = str(os.path.normpath(command)).replace('\\', '/') # на винде работает программа
+    if norm_path == '.':  # может быть пустым
+        return ''
+    Path = zipfile.Path(archivePath, norm_path)
     if Path.is_file() and Path.exists():  # файл
-        return maybe_path
-    if '...' in maybe_path or '*' in maybe_path:  # на точки и двоеточия
-        return 2
-    maybe_path = maybe_path.replace('..', '*')
-    while '//' in maybe_path or '.' in maybe_path:
-        maybe_path = maybe_path.replace('//', '/', 1)  # безболезненно
-        maybe_path = maybe_path.replace('.', '', 1)
-    maybe_path = maybe_path.split('/')
-    for i in range(len(maybe_path) - 1, -1, -1):
-        if maybe_path[i] == '*':
-            maybe_path[i] = ''
-            j = i - 1
-            while (j > 0 and (maybe_path[j] == '*' or not maybe_path[j]) ):
-                j = j - 1
-            maybe_path[j] = ''
-    maybe_path = '/'.join(maybe_path).rstrip('/')
-    while '//' in maybe_path:
-        maybe_path = maybe_path.replace('//', '/', 1)
-    if not maybe_path:
-        return maybe_path
-    Path = zipfile.Path(archivePath, maybe_path)
-    if not maybe_path.endswith('/'):
-        Path = zipfile.Path(archivePath, maybe_path + '/')
+        return norm_path
+    Path = zipfile.Path(archivePath, norm_path + '/')
+    norm_path = norm_path + '/'
     if Path.is_dir() and Path.exists():
-        path_file = maybe_path + '/'
-        return path_file
-    return 2
+        return norm_path
+    return '*'  # не нашёл ничего
 
 
 def cd(command, path_file, archivePath):
     result = path(command, path_file, archivePath)
-    if result == 2:
+    if result == '*':
         print(f"bash: cd: {command}: No such file or directory")
         return path_file
     Path = zipfile.Path(archivePath, result)
@@ -104,15 +85,22 @@ def cd(command, path_file, archivePath):
 
 
 def touch(command, path_file, archivePath, vremen):
-    with zipfile.ZipFile(archivePath, 'a') as myzip:
-        Path = zipfile.Path(archivePath, path_file + command)
-        path_to_file = path_file + command
-        if not Path.exists():
-            myzip.writestr(path_to_file, "")
-        else:
-            current_time = datetime.now()
-            formatted_time = current_time.strftime("%b\t%d %H:%M")
-            vremen[path_to_file] = formatted_time
+    if not command.startswith('\\'):  # не по абсолютному пути
+        command = path_file + command
+    else:
+        command = command[1:]
+    norm_path = str(os.path.normpath(command)).replace('\\', '/') # на винде работает программа
+    # c самим файлом
+    Path = zipfile.Path(archivePath, os.path.dirname(norm_path) + '/') # c его потомком-папкой
+    if Path.is_dir() and Path.exists():
+        with zipfile.ZipFile(archivePath, 'a') as myzip:
+            Path = zipfile.Path(archivePath, norm_path)
+            if not Path.exists():
+                myzip.writestr(norm_path, "")
+            else:
+                current_time = datetime.now()
+                formatted_time = current_time.strftime("%b\t%d %H:%M")
+                vremen[norm_path] = formatted_time
 
 
 def wc(command, path_file, archivePath):
