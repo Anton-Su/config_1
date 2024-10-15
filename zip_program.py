@@ -53,8 +53,11 @@ def ls(archivePath, path_file):
 
 def path(command, path_file, archivePath):
     maybe_path = command
+    print(maybe_path)
     if not maybe_path.startswith('\\'):  # не по абсолютному пути
         maybe_path = path_file + maybe_path
+    else:
+        maybe_path = maybe_path[1:]
     Path = zipfile.Path(archivePath, maybe_path)
     if Path.is_file() and Path.exists():
         return maybe_path
@@ -64,23 +67,23 @@ def path(command, path_file, archivePath):
 
 
 
-    maybe_path_with_tochi = maybe_path.split('\\')
-
-    print(maybe_path_with_tochi)
+    # maybe_path_with_tochi = maybe_path.split('/')
+    #
+    # print(maybe_path_with_tochi)
     Path = zipfile.Path(archivePath, maybe_path)
-    if not maybe_path.endswith('\\'):
+    if not maybe_path.endswith('/'):
         Path = zipfile.Path(archivePath, maybe_path + '/')
     if Path.is_dir() and Path.exists():
-        path_file = path_file + Path.name + '/'
+        path_file = maybe_path + '/'
         return path_file
     return path_file
 
 
 def cd(command, path_file, archivePath):
+    result = path(command, path_file, archivePath)
     if not command.startswith('\\'):  # не по абсолютному пути
         command = path_file + command
     Path = zipfile.Path(archivePath, command)
-    result = path(command, path_file, archivePath)
     if Path.is_file() and Path.exists():
         print(f"bash: cd: {Path.name}: Not a directory")
         return path_file
@@ -133,7 +136,10 @@ def main():
     if zipfile.is_zipfile(archivePath):
         path_file = ''
         while True:
-            command = input(f'{name + "@Configpc~" + path_file[:-1]}$ ').strip()
+            if len(path_file) == 0:
+                command = input(f'{name + "@Configpc~" + path_file[:-1]}$ ').strip()
+            else:
+                command = input(f'{name + "@Configpc~/" + path_file[:-1]}$ ').strip()
             if command.startswith('exit'):
                 break
             if command == 'ls':
