@@ -3,6 +3,7 @@ import zipfile
 import configparser
 import re
 from random import randint
+from datetime import datetime
 
 
 months = {
@@ -21,13 +22,15 @@ months = {
 }
 
 
-def ls_l(archivePath, path_file):
+def ls_l(archivePath, path_file, vremen):
     Path = zipfile.Path(archivePath, path_file)
     with zipfile.ZipFile(archivePath, mode="r") as archive:
         for i in Path.iterdir():
             file = path(str(i.name), path_file, archivePath)
             info = archive.getinfo(file)
             mon_ = months[info.date_time[1]] + "\t" + str(info.date_time[2]) + " " + str(info.date_time[3]).rjust(2, "0") + ":" + str(info.date_time[4]).rjust(2, "0")
+            if file in vremen:
+                mon_ = vremen[file]
             rasmer = info.file_size
             prava = "-rw-r--r--"
             if info.is_dir():
@@ -97,14 +100,18 @@ def cd(command, path_file, archivePath):
     return result
 
 
-def touch(command, path_file, archivePath):
+def touch(command, path_file, archivePath, vremen):
     with zipfile.ZipFile(archivePath, 'a') as myzip:
         touch = command.split(" ", 1)
         if len(touch) > 1:
             Path = zipfile.Path(archivePath, path_file + touch[1])
+            path_to_file = path_file + touch[1]
             if not Path.exists():
-                path_to_file = path_file + touch[1]
                 myzip.writestr(path_to_file, "")
+            else:
+                current_time = datetime.now()
+                formatted_time = current_time.strftime("%b\t%d %H:%M")
+                vremen[path_to_file] = formatted_time
 
 
 def wc(command, path_file, archivePath):
@@ -128,6 +135,7 @@ def wc(command, path_file, archivePath):
 
 
 def main():
+    vremen = {}
     config = configparser.ConfigParser()
     config.read('configuration.ini')
     name = config.get('User', 'name')
@@ -149,7 +157,7 @@ def main():
             if command == 'ls':
                 ls(archivePath, path_file)
             elif re.match(r'^ls\s+-l$', command):
-                ls_l(archivePath, path_file)
+                ls_l(archivePath, path_file, vremen)
             elif command.startswith('cd'):
                 if len(command.split(' ')) == 1:
                     path_file = ''
@@ -158,7 +166,7 @@ def main():
                 else:
                     print(f"bash: cd: too many arguments")
             elif command.startswith('touch'):
-                touch(command, path_file, archivePath)
+                touch(command, path_file, archivePath, vremen)
             elif command.startswith('wc'):
                 wc(command.split(" ", 1), path_file, archivePath)
             elif command:

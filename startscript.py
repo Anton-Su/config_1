@@ -9,8 +9,8 @@ startScriptPath = config.get('StartScriptPath', 'value')
 
 def fun():
     zip_program.ls(archivePath, '/')
-    zip_program.touch('touch privet.txt', '/', archivePath)
-    zip_program.wc(['wc', 'privet.txt'], '/', archivePath)
+    # zip_program.touch('touch privet.txt', '', archivePath)
+    # zip_program.wc(['wc', 'privet.txt'], '', archivePath)
 
 
 if __name__ == '__main__':
