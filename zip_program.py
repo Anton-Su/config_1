@@ -146,10 +146,13 @@ def main():
                 ls(archivePath, path_file)
             elif re.match(r'^ls\s+-l$', command):
                 ls_l(archivePath, path_file)
-            elif command == 'cd':
-                path_file = ''
-            elif command.startswith('cd '):
-                path_file = cd(command.split(' ', 1)[1], path_file, archivePath)
+            elif command.startswith('cd'):
+                if len(command.split(' ')) == 1:
+                    path_file = ''
+                elif len(command.split(' ')) == 2:
+                    path_file = cd(command.split(' ', 1)[1], path_file, archivePath)
+                else:
+                    print(f"bash: cd: too many arguments")
             elif command.startswith('touch'):
                 touch(command, path_file, archivePath)
             elif command.startswith('wc'):
