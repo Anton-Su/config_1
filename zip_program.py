@@ -2,7 +2,7 @@ import os
 import zipfile
 import configparser
 import re
-import random
+from random import randint
 
 
 months = {
@@ -29,9 +29,11 @@ def ls_l(archivePath, path_file):
             info = archive.getinfo(file)
             mon_ = months[info.date_time[1]] + "\t" + str(info.date_time[2]) + " " + str(info.date_time[3]).rjust(2, "0") + ":" + str(info.date_time[4]).rjust(2, "0")
             rasmer = info.file_size
+            prava = "-rw-r--r--"
             if info.is_dir():
-                rasmer = random.randint(200, 1800)
-            print(rasmer)
+                rasmer = randint(200, 1800)
+                prava = "drwxr-xr-x"
+            print(f'{prava} {randint(1, 5)} Antua Antua {rasmer} {mon_} {i.name}')
 
 
 def ls(archivePath, path_file):
