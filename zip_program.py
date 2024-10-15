@@ -4,7 +4,7 @@ import configparser
 import re
 from random import randint
 from datetime import datetime
-
+from PIL import Image
 
 months = {
     1: "Jan",
@@ -116,22 +116,34 @@ def touch(command, path_file, archivePath, vremen):
 
 
 def wc(command, path_file, archivePath):
-    Path = zipfile.Path(archivePath, path_file + command)
-    if Path.exists() or zipfile.Path(archivePath, path_file + command + '/').exists():
-        if Path.is_file():
-            len_bait = len(Path.read_bytes())
-            with Path.open('r') as reader:
-                text = reader.readlines()
-            stroki = len(text)
-            slova = 0
-            for i in range(stroki):
-                slova += len(text[i].split())
-            print(f'\t {stroki} \t {slova} \t {len_bait}')
-            return f'\t {stroki} \t {slova} \t {len_bait}'
-        else:
-            print(f'wc: {Path.name}: Is a directory')
-            print(f'\t 0 \t 0 \t 0 {Path.name}')
-            return f'\t {0} \t {0} \t {0}'
+    wc_path = path(command, path_file, archivePath)
+    Path = zipfile.Path(archivePath, wc_path)
+    if not Path.exists():
+        print(f'wc: {wc_path}: No such file or directory')
+        return
+    if Path.is_dir():
+        print(f'wc: {Path.name}: Is a directory')
+        print(f'\t 0 \t 0 \t 0 {Path.name}')
+        return f'\t {0} \t {0} \t {0}'
+    try:
+        len_bait = len(Path.read_bytes())
+        with Path.open('r', encoding="utf8") as reader:
+            text = reader.readlines()
+        stroki = len(text)
+        slova = 0
+        for i in range(stroki):
+            slova += len(text[i].split())
+        print(f'\t {stroki} \t {slova} \t {len_bait} \t {Path.name}')
+        return f'\t {stroki} \t {slova} \t {len_bait}'
+    except UnicodeDecodeError:
+        with zipfile.ZipFile(archivePath, 'a') as myzip:
+            file_info = myzip.getinfo(wc_path)
+            len_bait = file_info.file_size
+            with myzip.open(wc_path) as img_file:
+                img_data = img_file.read()
+                stroki = img_data.count(b'\n')
+                slova = len(img_data.split())
+            print(f'\t {stroki} \t {slova} \t {len_bait} \t {Path.name}')
 
 
 def main():
@@ -165,7 +177,6 @@ def main():
             elif re.match(r'^ls\s+-l$', command):
                 ls_l(archivePath, path_file, vremen)
             elif command.startswith('cd'):
-                print(command)
                 if command == 'cd':
                     path_file = ''
                 elif re.match(r'^cd\s+\S+$', command):
