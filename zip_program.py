@@ -176,6 +176,8 @@ def main():
                 print('touch: missing file operand')
             elif command.startswith('touch '):
                 touch(command.split(' ', 1)[1].lstrip(), path_file, archivePath, vremen)
+            elif command == 'wc':
+                print()
             elif command.startswith('wc '):
                 wc(command.split(' ', 1)[1].lstrip(), path_file, archivePath)
             elif command:
