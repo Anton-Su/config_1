@@ -58,7 +58,7 @@ def path(command, path_file, archivePath):
     else:
         maybe_path = maybe_path[1:]
     if '...' in maybe_path or '*' in maybe_path:  # на точки и двоеточия
-        return 0
+        return 2
     maybe_path = maybe_path.replace('..', '*')
     while '//' in maybe_path or '.' in maybe_path:
         maybe_path = maybe_path.replace('//', '/', 1)
@@ -131,7 +131,6 @@ def main():
         print("Error: Check ini файл!")
         return
     os.system(startScriptPath)
-    print(f"Вводите команды, {name}!")
     if zipfile.is_zipfile(archivePath):
         path_file = ''
         while True:
