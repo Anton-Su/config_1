@@ -67,7 +67,7 @@ def path(command, path_file, archivePath):
         return 2
     maybe_path = maybe_path.replace('..', '*')
     while '//' in maybe_path or '.' in maybe_path:
-        maybe_path = maybe_path.replace('//', '/', 1)
+        maybe_path = maybe_path.replace('//', '/', 1)  # безболезненно
         maybe_path = maybe_path.replace('.', '', 1)
     maybe_path = maybe_path.split('/')
     for i in range(len(maybe_path) - 1, -1, -1):
@@ -147,11 +147,18 @@ def main():
     if not os.path.exists(archivePath) or not os.path.exists(startScriptPath):
         print("Error: Check ini файл!")
         return
-    os.system(startScriptPath)
+    massiv = []
+    with open(startScriptPath, 'r') as file:
+        for line in file:
+            massiv.append(line.strip())
     if zipfile.is_zipfile(archivePath):
         path_file = ''
         while True:
-            if len(path_file) == 0:
+            if len(massiv):
+                print(f'{name + "@Configpc~" + path_file[:-1]}$ ')
+                command = massiv[0]
+                del massiv[0]
+            elif len(path_file) == 0:
                 command = input(f'{name + "@Configpc~" + path_file[:-1]}$ ').strip()
             else:
                 command = input(f'{name + "@Configpc~/" + path_file[:-1]}$ ').strip()
