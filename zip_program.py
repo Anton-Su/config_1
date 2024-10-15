@@ -155,7 +155,6 @@ def main():
         path_file = ''
         while True:
             if len(massiv):
-                print(f'{name + "@Configpc~" + path_file[:-1]}$ ')
                 command = massiv[0]
                 del massiv[0]
             elif len(path_file) == 0:
