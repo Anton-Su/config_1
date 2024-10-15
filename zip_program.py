@@ -57,6 +57,9 @@ def path(command, path_file, archivePath):
         maybe_path = path_file + maybe_path
     else:
         maybe_path = maybe_path[1:]
+    Path = zipfile.Path(archivePath, maybe_path)
+    if Path.is_file() and Path.exists():  # файл
+        return maybe_path
     if '...' in maybe_path or '*' in maybe_path:  # на точки и двоеточия
         return 2
     maybe_path = maybe_path.replace('..', '*')
@@ -71,8 +74,7 @@ def path(command, path_file, archivePath):
     maybe_path = '/'.join(maybe_path).rstrip('/')
     while '//' in maybe_path:
         maybe_path = maybe_path.replace('//', '/', 1)
-    Path = zipfile.Path(archivePath, maybe_path)
-    if not maybe_path or (Path.is_file() and Path.exists()):
+    if not maybe_path:
         return maybe_path
     Path = zipfile.Path(archivePath, maybe_path)
     if not maybe_path.endswith('/'):
@@ -87,6 +89,10 @@ def cd(command, path_file, archivePath):
     result = path(command, path_file, archivePath)
     if result == 2:
         print(f"bash: cd: {command}: No such file or directory")
+        return path_file
+    Path = zipfile.Path(archivePath, result)
+    if Path.is_file() and Path.exists():
+        print(f"bash: cd: {Path.name}: Not a directory")
         return path_file
     return result
 
