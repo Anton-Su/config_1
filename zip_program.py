@@ -53,48 +53,41 @@ def ls(archivePath, path_file):
 
 def path(command, path_file, archivePath):
     maybe_path = command
-    print(maybe_path)
     if not maybe_path.startswith('\\'):  # не по абсолютному пути
         maybe_path = path_file + maybe_path
     else:
         maybe_path = maybe_path[1:]
-    if '...' in maybe_path:
-        return path_file
-    while '//' in maybe_path:
+    if '...' in maybe_path or '*' in maybe_path:  # на точки и двоеточия
+        return 0
+    maybe_path = maybe_path.replace('..', '*')
+    while '//' in maybe_path or '.' in maybe_path:
         maybe_path = maybe_path.replace('//', '/', 1)
+        maybe_path = maybe_path.replace('.', '', 1)
     maybe_path = maybe_path.split('/')
-    print(maybe_path)
     for i in range(len(maybe_path) - 1, -1, -1):
-        if maybe_path[i] == '.' and i > 0:
-            maybe_path[i] = ''
-        elif maybe_path[i] == '..' and i > 0:
+        if maybe_path[i] == '*' and i > 0:
             maybe_path[i] = ''
             maybe_path[i - 1] = ''
-    maybe_path = '/'.join(maybe_path)
-    print(maybe_path)
+    maybe_path = '/'.join(maybe_path).rstrip('/')
     while '//' in maybe_path:
         maybe_path = maybe_path.replace('//', '/', 1)
-    if maybe_path == '.':
-        return '.'
     Path = zipfile.Path(archivePath, maybe_path)
-    if Path.is_file() and Path.exists():
+    if not maybe_path or (Path.is_file() and Path.exists()):
         return maybe_path
-    print(maybe_path) # на точки и двоеточия
     Path = zipfile.Path(archivePath, maybe_path)
     if not maybe_path.endswith('/'):
         Path = zipfile.Path(archivePath, maybe_path + '/')
     if Path.is_dir() and Path.exists():
         path_file = maybe_path + '/'
         return path_file
-    return path_file
+    return 2
 
 
 def cd(command, path_file, archivePath):
     result = path(command, path_file, archivePath)
-    if result == '.':
-        return path_file
-    if result == path_file:
+    if result == 2:
         print(f"bash: cd: {command}: No such file or directory")
+        return path_file
     return result
 
 
