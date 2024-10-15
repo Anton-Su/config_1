@@ -1,2 +1,5 @@
 ls
 ls -l
+cd folder_1
+cd ..
+cd \folder_1/1/
