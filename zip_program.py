@@ -71,9 +71,12 @@ def path(command, path_file, archivePath):
         maybe_path = maybe_path.replace('.', '', 1)
     maybe_path = maybe_path.split('/')
     for i in range(len(maybe_path) - 1, -1, -1):
-        if maybe_path[i] == '*' and i > 0:
+        if maybe_path[i] == '*':
             maybe_path[i] = ''
-            maybe_path[i - 1] = ''
+            j = i - 1
+            while (j > 0 and (maybe_path[j] == '*' or not maybe_path[j]) ):
+                j = j - 1
+            maybe_path[j] = ''
     maybe_path = '/'.join(maybe_path).rstrip('/')
     while '//' in maybe_path:
         maybe_path = maybe_path.replace('//', '/', 1)
