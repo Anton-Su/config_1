@@ -4,7 +4,6 @@ import configparser
 import re
 from random import randint
 from datetime import datetime
-from PIL import Image
 
 months = {
     1: "Jan",
