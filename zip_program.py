@@ -1,4 +1,5 @@
 import os
+import sys
 import zipfile
 import configparser
 import re
@@ -54,7 +55,7 @@ def ls(archivePath, path_file):
 
 
 def path(command, path_file, archivePath):
-    if not command.startswith('\\'):  # не по абсолютному пути
+    if not command.startswith('/'):  # не по абсолютному пути
         command = path_file + command
     else:
         command = command[1:]
@@ -100,13 +101,15 @@ def touch(command, path_file, archivePath, vremen):
                 current_time = datetime.now()
                 formatted_time = current_time.strftime("%b\t%d %H:%M")
                 vremen[norm_path] = formatted_time
+            return
+    print(f'touch: cannot touch {command}: Not a directory')
 
 
 def wc(command, path_file, archivePath):
     wc_path = path(command, path_file, archivePath)
     Path = zipfile.Path(archivePath, wc_path)
     if not Path.exists():
-        print(f'wc: {wc_path}: No such file or directory')
+        print(f'wc: {command}: No such file or directory')
         return
     if Path.is_dir():
         print(f'wc: {Path.name}: Is a directory')
@@ -133,7 +136,7 @@ def wc(command, path_file, archivePath):
             print(f'\t {stroki} \t {slova} \t {len_bait} \t {Path.name}')
 
 
-def main():
+def main(pc_name):
     vremen = {}
     config = configparser.ConfigParser()
     config.read('configuration.ini')
@@ -141,7 +144,7 @@ def main():
     archivePath = config.get('ArchivePath', 'value')
     startScriptPath = config.get('StartScriptPath', 'value')
     if not os.path.exists(archivePath) or not os.path.exists(startScriptPath):
-        print("Error: Check ini файл!")
+        print("Error: Check configuration.ini!")
         return
     massiv = []
     with open(startScriptPath, 'r') as file:
@@ -154,9 +157,9 @@ def main():
                 command = massiv[0]
                 del massiv[0]
             elif len(path_file) == 0:
-                command = input(f'{name + "@Configpc~" + path_file[:-1]}$ ').strip()
+                command = input(f'{name}@{pc_name}~{path_file[:-1]}$ ').strip()
             else:
-                command = input(f'{name + "@Configpc~/" + path_file[:-1]}$ ').strip()
+                command = input(f'{name}@{pc_name}~/{path_file[:-1]}$ ').strip()
             if command.startswith('exit'):
                 break
             if command == 'ls':
@@ -183,4 +186,7 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    pc_name = 'Configpc'
+    if len(sys.argv) == 2:
+        pc_name = sys.argv[1]
+    main(pc_name)
