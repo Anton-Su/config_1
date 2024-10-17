@@ -1,5 +1,12 @@
-ls
 ls -l
-cd folder_1
+cd folder_1/
+ls
 cd ..
 cd /folder_1/1/
+cd /folder_1/./1///////hey-hey/
+ls -l
+wc testirovanie.txt
+wc /folder_1/./1///./././/hey-hey/normal_photo_1.jpg
+touch /folder_1/./1///./././/hey-hey/normal_photo_1.jpg
+touch /folder_1/./1///./././/hey-hey/testirovanie.txt
+ls -l

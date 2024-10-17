@@ -22,7 +22,7 @@ months = {
 }
 
 
-def ls_l(archivePath, path_file, vremen):
+def ls_l(archivePath, path_file, vremen, user_name):
     Path = zipfile.Path(archivePath, path_file)
     with zipfile.ZipFile(archivePath, mode="r") as archive:
         for i in Path.iterdir():
@@ -36,7 +36,7 @@ def ls_l(archivePath, path_file, vremen):
             if info.is_dir():
                 rasmer = randint(200, 1800)
                 prava = "drwxr-xr-x"
-            print(f'{prava} {randint(1, 5)} Antua Antua {rasmer} {mon_} {i.name}')
+            print(f'{prava} {randint(1, 5)} {user_name} {user_name} {rasmer} {mon_} {i.name}')
 
 
 def ls(archivePath, path_file):
@@ -65,8 +65,8 @@ def path(command, path_file, archivePath):
     Path = zipfile.Path(archivePath, norm_path)
     if Path.is_file() and Path.exists():  # файл
         return norm_path
-    Path = zipfile.Path(archivePath, norm_path + '/')
     norm_path = norm_path + '/'
+    Path = zipfile.Path(archivePath, norm_path)
     if Path.is_dir() and Path.exists():
         return norm_path
     return '*'  # не нашёл ничего
@@ -85,7 +85,7 @@ def cd(command, path_file, archivePath):
 
 
 def touch(command, path_file, archivePath, vremen):
-    if not command.startswith('\\'):  # не по абсолютному пути
+    if not command.startswith('/'):  # не по абсолютному пути
         command = path_file + command
     else:
         command = command[1:]
@@ -101,7 +101,7 @@ def touch(command, path_file, archivePath, vremen):
                 current_time = datetime.now()
                 formatted_time = current_time.strftime("%b\t%d %H:%M")
                 vremen[norm_path] = formatted_time
-            return
+            return 1  # дотронулись
     print(f'touch: cannot touch {command}: Not a directory')
 
 
@@ -114,7 +114,7 @@ def wc(command, path_file, archivePath):
     if Path.is_dir():
         print(f'wc: {Path.name}: Is a directory')
         print(f'\t 0 \t 0 \t 0 {Path.name}')
-        return f'\t {0} \t {0} \t {0}'
+        return 'directory'
     try:
         len_bait = len(Path.read_bytes())
         with Path.open('r', encoding="utf8") as reader:
@@ -134,15 +134,16 @@ def wc(command, path_file, archivePath):
                 stroki = img_data.count(b'\n')
                 slova = len(img_data.split())
             print(f'\t {stroki} \t {slova} \t {len_bait} \t {Path.name}')
+            return f'\t {stroki} \t {slova} \t {len_bait}'
 
 
 def main(pc_name):
     vremen = {}
     config = configparser.ConfigParser()
     config.read('configuration.ini')
-    name = config.get('User', 'name')
-    archivePath = config.get('ArchivePath', 'value')
-    startScriptPath = config.get('StartScriptPath', 'value')
+    user_name = config.get('User', 'user_name')
+    archivePath = config.get('ArchivePath', 'path_value')
+    startScriptPath = config.get('StartScriptPath', 'path_value')
     if not os.path.exists(archivePath) or not os.path.exists(startScriptPath):
         print("Error: Check configuration.ini!")
         return
@@ -157,15 +158,15 @@ def main(pc_name):
                 command = massiv[0]
                 del massiv[0]
             elif len(path_file) == 0:
-                command = input(f'{name}@{pc_name}~{path_file[:-1]}$ ').strip()
+                command = input(f'{user_name}@{pc_name}~{path_file[:-1]}$ ').strip()
             else:
-                command = input(f'{name}@{pc_name}~/{path_file[:-1]}$ ').strip()
+                command = input(f'{user_name}@{pc_name}~/{path_file[:-1]}$ ').strip()
             if command.startswith('exit'):
                 break
             if command == 'ls':
                 ls(archivePath, path_file)
             elif re.match(r'^ls\s+-l$', command):
-                ls_l(archivePath, path_file, vremen)
+                ls_l(archivePath, path_file, vremen, user_name)
             elif command.startswith('cd'):
                 if command == 'cd':
                     path_file = ''
